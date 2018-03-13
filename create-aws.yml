@@ -1,0 +1,46 @@
+---
+# create a machine for testing Cuckoo automated install
+- name: "Create Cuckoo test machine"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+  - name: Create Cuckoo security group
+    ec2_group:
+      name: "Ansible-Cuckoo"
+      description: "Security Group for Cuckoo test machine"
+      region: "{{aws_region}}"
+      vpc_id: "{{vpc_id}}"
+      aws_access_key: "{{aws_access_key}}"
+      aws_secret_key: "{{aws_secret_key}}"
+      rules:
+        - proto: tcp
+          ports: 22
+          cidr_ip: 0.0.0.0/0
+      rules_egress:
+        - proto: all
+          cidr_ip: 0.0.0.0/0
+    register: firewall
+  - name: Create an EC2 instance
+    ec2:
+      aws_access_key: "{{aws_access_key}}"
+      aws_secret_key: "{{aws_secret_key}}"
+      key_name: "{{key_name}}"
+      region: "{{aws_region}}"
+      instance_type: "{{instance_type}}"
+      image: "{{ami_id}}"
+      wait: yes
+      assign_public_ip: yes
+      group: "Ansible-Cuckoo"
+      vpc_subnet_id: "{{subnet_id}}"
+      volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: 8
+          delete_on_termination: true
+      exact_count: 1
+      count_tag:
+         Name: aws-cuckoo
+      instance_tags:
+         Name: aws-cuckoo
+    register: ec2
