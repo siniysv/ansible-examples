@@ -5,15 +5,15 @@
   connection: local
   gather_facts: false
   tasks:
-  - name: EC2 Facts
+  - name: "EC2 Facts"
     ec2_instance_facts:
       region: "{{aws_region}}"
       filters:
-        tag:Name: "aws-cuckoo"
+        tag:Name: "AWS-Cuckoo"
       aws_access_key: "{{aws_access_key}}"
       aws_secret_key: "{{aws_secret_key}}"
     register: ec2
-  - name: Delete Cuckoo EC2 instance
+  - name: "Delete Cuckoo EC2 instance"
     ec2:
       region: "{{aws_region}}"
       aws_access_key: "{{aws_access_key}}"

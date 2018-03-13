@@ -5,7 +5,7 @@
   connection: local
   gather_facts: false
   tasks:
-  - name: Create Cuckoo security group
+  - name: "Create Cuckoo security group"
     ec2_group:
       name: "Ansible-Cuckoo"
       description: "Security Group for Cuckoo test machine"
@@ -21,7 +21,7 @@
         - proto: all
           cidr_ip: 0.0.0.0/0
     register: firewall
-  - name: Create an EC2 instance
+  - name: "Create an EC2 instance"
     ec2:
       aws_access_key: "{{aws_access_key}}"
       aws_secret_key: "{{aws_secret_key}}"
@@ -40,7 +40,7 @@
           delete_on_termination: true
       exact_count: 1
       count_tag:
-         Name: aws-cuckoo
+         Name: "AWS-Cuckoo"
       instance_tags:
-         Name: aws-cuckoo
+         Name: "AWS-Cuckoo"
     register: ec2
